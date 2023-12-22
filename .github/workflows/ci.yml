@@ -6,18 +6,21 @@ on:
     pull_request_review:
         types: [submitted]
 
-# env:
-#     isPullRequest: ${{ github.event_name == 'pull_request' }}
-#     isAprovedReview: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED' }}
-#     needsValidation: ${{ env.isPullRequest && env.isAprovedReview }}
 env:
-    IS_VALID: true
+    isPullRequest: ${{ github.event_name == 'pull_request' }}
+    isAprovedReview: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED' }}
 
 jobs:
     validate:
-        if: env.IS_VALID
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+              if: ${{ env.isPullRequest || env.isAprovedReview }}
+
             - name: test
-              run: echo "test"
+              if: ${{ env.isPullRequest }}
+              run: echo "É um Pull Request"
+
+            - name: test
+              if: ${{ env.isAprovedReview }}
+              run: echo "A Revisão foi aprovada "

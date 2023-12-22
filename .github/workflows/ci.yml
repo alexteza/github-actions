@@ -6,14 +6,16 @@ on:
     pull_request_review:
         types: [submitted]
 
+# env:
+#     isPullRequest: ${{ github.event_name == 'pull_request' }}
+#     isAprovedReview: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED' }}
+#     needsValidation: ${{ env.isPullRequest && env.isAprovedReview }}
 env:
-    isPullRequest: ${{ github.event_name == 'pull_request' }}
-    isAprovedReview: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED' }}
-    needsValidation: ${{ env.isPullRequest || env.isAprovedReview }}
+    IS_VALID: true
 
 jobs:
     validate:
-        if: ${{ env.needsValidation }}
+        if: env.IS_VALID
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4

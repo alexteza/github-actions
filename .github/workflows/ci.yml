@@ -1,0 +1,21 @@
+name: CI
+
+on:
+    pull_request:
+        branches: ['*']
+    pull_request_review:
+        types: [submitted]
+
+env:
+    isPullRequest: ${{ github.event_name == 'pull_request' }}
+    isAprovedReview: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'APPROVED' }}
+    needsValidation: ${{ env.isPullRequest || env.isAprovedReview }}
+
+jobs:
+    validate:
+        if: ${{ env.needsValidation }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: test
+              run: echo "test"
